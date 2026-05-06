@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
-// Importamos nuestros componentes modulares
+// Importamos nuestros componentes modulares (TODOS VAN AQUÍ ARRIBA)
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Footer from './components/Footer';
+import AdminDashboard from './pages/AdminDashboard'; // <-- ¡Aquí está el import correcto!
 
 function App() {
   const [view, setView] = useState('home'); 
@@ -31,7 +32,7 @@ function App() {
     } catch (err) { console.error("Error al cargar vehículos", err); }
   };
 
-  // 2. Función para registrar vehículo (¡RESTAURADA!)
+  // 2. Función para registrar vehículo
   const handleRegisterVehicle = async (e) => {
     e.preventDefault();
     try {
@@ -161,33 +162,12 @@ function App() {
           </section>
         )}
 
-        {/* 5. ADMIN VEHICLES (Aquí reparamos la advertencia del 'key') */}
+        {/* 5. ADMIN DASHBOARD MODULAR */}
         {view === 'admin' && (
-          <section className="admin-panel" style={{padding: '40px 10%'}}>
-            <div className="admin-links">
-              <button onClick={() => setView('reg-vehicle')}>Register vehicle</button>
-              <button onClick={() => setView('exit')}>Exit vehicle</button>
-              <button className="active-link">Admin vehicles</button>
-            </div>
-            <p className="description">Manage the currently registered vehicles</p>
-            <div className="dashboard-container">
-              <div className="vehicle-grid">
-                <div className="grid-header">License plate</div>
-                <div className="grid-header">Type</div>
-                <div className="grid-header">Arrival</div>
-                <div className="grid-header">Status</div>
-                {vehiculos.length > 0 ? vehiculos.map((v, index) => (
-                  <React.Fragment key={v.registroid || index}>
-                    <div className="grid-item">{v.licensePlate}</div>
-                    <div className="grid-item">{v.tipoVehiculoId === 1 ? 'Car' : 'Moto'}</div>
-                    <div className="grid-item">{new Date(v.arrivalTime).toLocaleTimeString()}</div>
-                    <div className="grid-item"><span className="status-badge">Active</span></div>
-                  </React.Fragment>
-                )) : <div className="grid-item" style={{gridColumn: 'span 4', textAlign: 'center'}}>No vehicles active.</div>}
-              </div>
-              <div className="admin-image"><img src="/images/admin.png" alt="Admin" /></div>
-            </div>
-          </section>
+          <AdminDashboard 
+            vehiculos={vehiculos}  /* Le enviamos la lista de vehículos */
+            setView={setView}      /* Le enviamos la función para cambiar de pantalla */
+          />
         )}
 
         {/* 6. REGISTER VEHICLE */}
